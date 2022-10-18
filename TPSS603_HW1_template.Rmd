@@ -1,0 +1,186 @@
+---
+title: "TPSS603_HW1"
+output: pdf_document
+---
+
+# Name - HW1 - Experimental Design
+
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(readr)
+library(maptools)
+library(ggplot2)
+library(raster)
+library(psych)
+library(gmodels)
+library(Rmisc)
+
+```
+
+## 1.	Import the data
+```{r}
+df <- read.csv("path to data file")
+```
+
+## 2. Identify a numeric variable from the dataset:
+**a. Find the mean, median, variance (s2), standard deviation (sd), coefficient of variation (CV) and the standard error of the mean.**
+```{r}
+mean("variable") #calculating mean on variable of interest
+median("variable") #calculating median on variable of interest
+var("variable") #calculating variance if variable of interest
+sd("variable") #calculating standard deviation of variable of interest
+(sd("variable")/mean("variable"))*100 #calculating coefficient of variation = standard deviation divided by mean times 100
+(sd("variable")/sqrt(length("variable"))) #calculating standard error of the mean = standard deviation divided by square root
+
+```
+
+```{r}
+
+#library(psych)
+describe("variable",type=2) #calculating all above measures with single command
+
+```
+
+**b.	Split the dataset by treatment and recalculate descriptive statistics by treatment.**	
+```{r}
+
+treatment1 <- filter(df,Trt=="cotton") #Pull out the first treatment of the df
+mean() #calculating mean
+median() #calculating median
+var() #calculating variance
+sd() #calculating standard deviation
+(sd()/mean())*100 #calculating coefficient of variation = standard deviation divided by mean times 100
+(sd()/sqrt(length())) #calculating standard error of the mean = standard deviation divided by square root
+
+treatment2 <- filter(df,Trt=="polyester") #pull out the first treatment of the df
+mean() #calculating mean
+median() #calculating median
+var() #calculating variance
+sd() #calculating standard deviation
+(sd()/mean())*100 #calculating coefficient of variation = standard deviation divided by mean times 100
+(sd()/sqrt(length())) #calculating standard error of the mean = standard deviation divided by square root
+
+```
+
+**Mutating Data**
+```{r}
+df.4 <- df %>%  #use dplyr to multipe the variable of choice by 4
+  summarize("variable"*4) %>% 
+  mutate()
+
+df.15 <- df %>% #use dplyr to add 15 to the variable of choice
+  summarize("variable"+15) %>% 
+  mutate()
+
+df.all <- cbind(df,df.15, df.4)#combine all modified variables into a single dataframe
+```
+**c.	Find the mean, median, variance, standard deviation, and coefficient of variation, and standard error of the mean for the same variable after you add 15 to each data value.**
+```{r}
+
+mean() #calculating mean
+median() #calculating median
+var() #calculating variance
+sd() #calculating standard deviation
+(sd()/mean())*100 #calculating coefficient of variation = standard deviation divided by mean times 100
+(sd()/sqrt(length())) #calculating standard error of the mean = standard deviation divided by square root
+
+```
+**d.	Repeat, but this time multiply each data value by 4.** 
+```{r}
+
+
+mean() #calculating mean
+median() #calculating median
+var() #calculating variance
+sd() #calculating standard deviation
+(sd()/mean())*100 #calculating coefficient of variation = standard deviation divided by mean times 100
+(sd()/sqrt(length())) #calculating standard error of the mean = standard deviation divided by square root
+
+```
+
+**e.	Describe what happens when you transform the data.**
+
+**Answer:** 
+
+**f.	Create a graphic of the distribution of the original and both transformed datasets on the same plot.**
+```{r}
+
+ggplot(df,mapping=aes(Trt)) +
+  geom_boxplot(aes(y="variable"),color="red") +
+  geom_boxplot(aes(y="variable"+15),color="green") +
+  geom_boxplot(aes(y="variable"*4),color="blue") +
+  labs(title="Original and Transformed Datasets",x="Treatment",y="Thread")
+
+graph<- df.all %>%  #create new dataframe to make plotting easier
+  gather(category,Trt)
+
+ggplot(graph,mapping=aes(x=Trt,fill=category)) +
+  geom_density(alpha=.2) +
+  labs(title="Density Distributions of Sewing Thread and Transformed",x="Thread",y="Density")
+  
+
+```
+
+## 3.	Construct a 95% and a 99% confidence interval for each treatment in the untransformed data
+```{r}
+
+ci95.trt1 <- ci("variable from treatment 1",confidence=.95) #calculating confidence interval 95% for treatment 1
+ci95.trt2 <- ci("variable from treatment 2",confidence=.95) #calculating confidence interval 95% for treatment 2
+
+ci99.trt1 <- ci("variable from treatment 1",confidence=.99) #calculating confidence interval 99% for treatment 1
+ci99.trt2 <- ci("variable from treatment 2",confidence=.99)#calculating confidence interval 99% for treatment 2
+
+```
+
+## 4.	Create a graphical representation of your Confidence interval
+**a.	As a histogram**
+```{r}
+
+summary99 <- summarySE(df,measurevar='variable',groupvars='Trt',conf.interval = 0.99) #create summary of variable
+
+ggplot(summary99,aes(x=Trt,y="response")) + 
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin="response"-ci,   
+                    ymax="response"+ci),width=.2,position=position_dodge(.9)) +
+  labs(title="99% CI")
+  
+
+summary95 <- summarySE(df,measurevar="response",groupvars='Trt') #create summary of variable
+
+ggplot(summary95,aes(x=Trt,y="response")) + 
+  geom_bar(position=position_dodge(),stat="identity") +
+  geom_errorbar(aes(ymin="response"-ci,
+                    ymax="response"+ci),width=.2,position=position_dodge(.9)) +
+  labs(title="95% CI")
+
+```
+
+**b.	As a boxplot**
+```{r}
+ci.box <- as.data.frame(cbind(ci95.trt1,ci99.trt1,ci95.trt2,ci99.trt2))
+
+boxplot(ci.box)
+```
+
+## 5.	How would the population represented and reliability of your answer be affected if the sample was not random, but rather was selected:
+
+**a.	By an expert in the field?**
+
+**Answer:**
+
+**b.	From seven individuals in one randomly selected group?**
+
+**Answer:** 
+
+**c.	From the seven individuals used in a previous experiment?**
+
+**Answer:**
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

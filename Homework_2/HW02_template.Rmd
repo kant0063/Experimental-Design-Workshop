@@ -1,0 +1,103 @@
+---
+title: "TPSS603_HW02_template"
+output: pdf_document or microsoft word document 
+---
+
+# TPSS 603 - Experimental Design
+### Name
+
+```{r setup, include=FALSE}
+
+#libraries needed for the homework
+library(daewr)
+library(gmodels)
+library(dplyr)
+library(raster)
+library(agricolae)
+library(ggplot2)
+
+```
+
+**1.	Create a potential randomization for any CR data.**
+```{r}
+
+#create a randomization based on a function from a library
+#hint use ?design.crd
+#reacall 5 treatmants 30 replications per treatment
+design.crd() #function from agricolae that will do the randomization
+
+```
+
+**Load in the Fertilizer data**
+
+```{r}
+#this is where you use the data from the file attached
+data <- read.csv("") #read in the datafile
+head(data) #look at the first 6 lines of the data
+
+#create the anova model for the design using the data provided
+
+mod <- aov("CR design model", data=data) #create a linear model for the data
+summary(mod) #look at the anova for the model
+
+```
+
+**2.	What is the Null Hypothesis?**
+**Answer:** 
+
+**3.	What is the Alternative hypothesis?**
+**Answer:** 
+
+**4.	What is the Linear model?** # this is the abstraction of the generalized model
+
+**Answer:** 
+
+**5.	What is the experimental unit?** 
+**Answer:** 
+
+**6.	What are the treatments?**
+**Answer:** 
+
+**7.	How many factors are being studied?**
+**Answer:** 
+
+**8.	How many levels are present?**
+**Answer:** 
+
+**9.	Is the normality assumption true (qqplot)?**
+**Answer:**  
+```{r}
+
+par(mfrow=c(2,2)) #set the plot
+plot(mod) #use the plot funciton to make the qq plot
+
+```
+
+**10.	Complete the ANOVA table for the experiment.**
+```{r}
+
+summary() #Print the summary of the anova table from the model abve
+
+```
+
+**11.	Do we reject or fail to reject the null hypothesis?**
+**Answer:**  
+
+**12.	Construct a contrast between two treatments and interpret the result.**
+**Answer:** 
+```{r}
+
+mod # look at linear model
+summary(mod) # look at the summary of the model
+fit.contrast(mod,"Trt", c()) # create the contrast between two treatments
+
+
+
+```
+**Answer:** 
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

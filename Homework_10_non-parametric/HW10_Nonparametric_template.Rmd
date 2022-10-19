@@ -1,0 +1,54 @@
+---
+title: "HW_Nonparametric"
+author: ""
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(car)
+library(dplyr)
+library(ggplot2)
+library(MuMIn)
+library(agricolae)
+library(DunnettTests)
+library(multcomp)
+
+```
+
+**Problem Background:**
+The data provided show the difference in the number of glucocorticoid Receptors for different cell types. 
+
+**1.**
+Do a Kruskal-Wallis test of the hypotheses on the attached data. Describe the result of the test in terms of "statistical significance" and create a visual for the results. 
+**Answer:**
+
+```{r}
+receptors_dat <- read.csv("",header=TRUE)
+str(receptors_dat)
+
+receptors_out <- kruskal.test(~,data=receptors_dat)
+print(receptors_out)
+
+ggplot(data=receptors_dat) +
+  geom_boxplot(aes(x=,y=))
+```
+
+
+**2.**
+Do a conventional ANOVA on the same data, consider it a CR design. 
+```{r}
+receptor_cr <- lm(~,data=receptors_dat)
+anova(receptor_cr)
+```
+
+**3.**
+Compare and Contrast the results. 
+**Answer:** 
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

@@ -1,0 +1,120 @@
+---
+_title: HW6_MixedModel
+output:
+  word_document: default
+  pdf_document: default
+---
+
+# TPSS 603 - Experimental Design
+## Augmented - Homework 11
+### NAME
+
+```{r setup, include=FALSE}
+library (dplyr)
+library(raster)
+library(lattice)
+library(agricolae)
+library(lme4)
+library(lmerTest)
+library(nlme)
+library(reshape2)
+library(ggplot2)
+library(multcomp)
+library(emmeans)
+library(multcomp)
+library(multcompView)
+library(dplyr)
+library(kableExtra)
+library(xtable)
+library(augmentedRCBD)
+```
+
+**Problem Background**
+You are a plant breeder looking to create bioforitfied food. You have a subeset of peppers with different vitamin A and vitamin C contents. You run a an augmented experiment due to seed limitations. You will have to interpret the results and make recomendations about which experimental varities to move forward.  
+
+```{r}
+
+aug_vitamin <- read.csv("")
+str(aug_vitamin) #make sure each variable is what it is supposed to be (factor,  numberic, character)
+
+```
+**Problem 1.** What are the factors and the levels of the respective factors in this experiment? Are the factors random or fixed in this experiment?
+**Answer:** 
+
+**Problem 2.** State the null and alternative hypotheses for the experiment.
+**Answer:**
+*HO:* 
+*HA:* 
+
+**Problem 3.** Write the linear additive model and define the components of the model.
+**Answer:**
+The linear model for a factorial design is *Y*ijkl=*U*+model componetns+*E*ijkl. 
+*Y*ijlk is the 
+*U* is the  
+the ___ factor effect per level 
+the ___  factor effect per level  
+the ____ factor effect per level  
+
+the *E* experimental error. 
+
+**Problem 4.** Conduct an Analysis of Variance (ANOVA) using a statistical software package.
+**a.**	Write out the ANOVA table including the degrees of freedom, sums of squares, mean squares, and indicate which sources of variation are significant. 
+```{r}
+
+#random effect of block to explore lsmeans 
+aug_out <- lmer(~  + (1| ), data=aug_vitamin)
+summary()
+anova()
+
+
+#check assumptions note why they do not look why you would expect
+plot()
+qqnorm(resid())
+qqline(resid())
+
+
+
+
+```
+
+
+```{r}
+
+#fixed effect model with specific pacages
+out1 <- augmentedRCBD(, , , method.comp = "lsd", alpha = 0.05, group = TRUE, console = TRUE,
+checks = c("",
+             "",
+             "",
+              ""))
+
+
+
+```
+
+```{r}
+
+#plot the data and interpret
+
+#random effects model using emmeans
+
+#mean seperation
+em_line<-emmeans(,  ~ )
+em_line
+pairs(em_line)
+plot(em_line)
+
+#fixed effects using augmentedRCBD 
+  
+plot(freqdist.augmentedRCBD(,xlab="", highlight.check = TRUE, check.col = "red"))
+
+```
+
+**Problem 5:** Write a brief summary of the results and discuss conclusions you could draw from the data set.  It might be appropriate to graphically present some of the data from the study. Which varities are the winners? Are the same winners for both vitamin A and vitamin C?
+**Answer:** 
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

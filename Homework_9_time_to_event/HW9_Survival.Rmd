@@ -1,0 +1,100 @@
+---
+title: "HW_Survival"
+author: "Name"
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(car)
+library(dplyr)
+library(ggplot2)
+library(MuMIn)
+library(agricolae)
+library(DunnettTests)
+library(multcomp)
+library(survival)
+library(survminer)
+library(coin)
+library(lubridate)
+library(cmprsk)
+library(DunnettTests)
+library(multcomp)
+library(survminer)
+library(survival)
+
+```
+
+```{r}
+cer <- read.csv("")
+str(cer)
+```
+
+**Problem Background:**
+Cervical cancer was assessed in 30 patients from a randomized study of radiotherapy with and without a new radiosensitiser. Based on data from MRC Working Party on Advanced Carcinoma of the Cervix, Radiotherapy Oncology 26:93-103, 1993. Analyzed in and obtained from MKB Parmar, D Machin, Survival Analysis: A Practical Approach, Wiley, 1995. age = age in years at diagnosis, status: (0 = censored) Survival time is in days (from randomization).
+
+**1.** Use the Kaplan-Meier method obtain estimates and plots of the survivor functions for the two treatments. Based on the survival functions, which treatment yielded a longer survival time in the sample? 
+**Answer:** 
+
+```{r}
+cer1 <- cer %>% filter(Treatment== "no radiosensitiser")
+cer2 <- cer %>% filter(Treatment=="radiosensitiser")
+
+surv <-survfit(Surv(, ) ~, data = cer)
+surv1 <-with(cer1, Surv(,))
+surv2 <-with(cer2, Surv(,))
+
+surv1_mod  <- survfit(Surv(,) ~1, data=cer1)
+summary(surv1_mod)
+surv2_mod  <- survfit(Surv(,) ~1, data=cer2)
+summary(surv2_mod)
+
+plot(surv1_mod,xlab="t",ylab=expression(hat(S)*"(t)"), col="blue",main = 'Kaplan Meyer Plot with confidence bands')
+lines(surv2_mod,col="red")
+legend(50, 0.2, legend = c('Treatment 1 Estimates', 'Treatment 2 Estimates'), lty = 1:1,col = c("blue","red"))
+
+#or 
+
+ggsurvplot(surv, data=, conf.int = TRUE, pval = TRUE)
+
+```
+
+
+**2.** Carry out the log-rank test to compare treatments in a graphical form. 
+```{r}
+
+cox_fit <- coxph(Surv(, status) ~ ,data = cer)
+summary(cox_fit)
+a <- cox.zph(cox_fit)
+
+plot(survfit(cox_fit), col = "black")
+
+
+
+```
+
+```{r}
+#Create single plot with ggplot with p-value for test
+
+surv <-survfit(Surv(, ) ~, data = cer)
+
+ggsurvplot(surv, data = myel, conf.int = TRUE, pval = TRUE, fun = 'pct', risk.table = TRUE, size = 1, linetype = 'strata', palette = c('#E7B800', '#2E9FDF'))
+
+logrank_test(Surv(, ) ~ as.factor(), data = myel, distribution = 'exact')
+
+coxph(Surv(, ) ~ as.factor(), data = myel) %>% 
+  gtsummary::tbl_regression(exp = TRUE) 
+
+
+ci_fit <- cuminc(cer$, cer$,group = cer$, cencode = 2)
+ggcompetingrisks(ci_fit,conf.int = TRUE, pval = TRUE)
+
+```
+
+**3.** What are your conclusions?
+**Answer:** 
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

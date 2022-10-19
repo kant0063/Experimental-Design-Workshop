@@ -1,0 +1,79 @@
+---
+title: "HW4_Factorial"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# TPSS 603 - Experimental Design
+### Name
+
+```{r setup, include=FALSE}
+
+library(car)
+library(agricolae)
+library(DunnettTests)
+library(multcomp)
+
+```
+
+This is factorial experiment; it looks at all possible combinations of the factors being explored. In this experiment the combination of treatments is fertilizer and light on plant growth (height in cm). There are four fertilizer treatments and two light treatments with 5 replications of each combination. 
+
+```{r}
+green <- read.csv('path to your file',header=TRUE)
+head(green)
+str(green)
+summary(green)
+
+```
+
+
+**1.**	What the linear model for this experiment? Recall this is the abstraction of the expeimental design not this specific experiment. 
+**Answer:** 
+
+
+**2.**	Conduct an Analysis of Variance (ANOVA)
+```{r}
+green_aov <- aov()
+summary(green_aov)
+
+```
+**3.**	Does your model meet the assumptions of ANOVA? If not, conduct the necessary transformation and repeat the ANOVA on the new data.
+*Checking the assumption of Equal Variance*
+```{r}
+leveneTest()
+
+shapiro.test()
+```
+**Answer:** 
+*Conducting further look into normality with QQplot*
+```{r}
+par(mfrow=c(2,2))
+plot(green_aov)
+```
+**Answer:** 
+
+
+**4.**	Write out the ANOVA table
+```{r}
+summary(green_aov)
+
+```
+
+**5.**	Write a brief summary of the results and discuss conclusions you could draw from the analysis of the data set. Include a table or figure of the results of the experiment
+
+```{r}
+TukeyHSD()
+
+green_multicomp <- HSD.test()
+bar.group()
+title(cex.main=1,main="Comparison between treatments",ylab="Growth",xlab="Factor Interactions")
+
+```
+**Answer:**  
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

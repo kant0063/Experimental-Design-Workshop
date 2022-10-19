@@ -1,0 +1,161 @@
+---
+_title: HW6_MixedModel
+output:
+  word_document: default
+  pdf_document: default
+---
+
+# TPSS 603 - Experimental Design
+## Mixed Model Experiments - Homework 6
+### NAME
+
+```{r setup, include=FALSE}
+library (dplyr)
+library(raster)
+library(lattice)
+library(agricolae)
+library(lme4)
+library(lmerTest)
+library(car)
+library(nlme)
+library(reshape2)
+library(ggplot2)
+library(multcomp)
+library(merTools)
+```
+
+**Problem Background**
+
+Mixed models contain both fixed and random effects. Recall that with fixed-effects models you are concerned with making inference only with the classes of data you have sampled, with random-effects, you are concerned with the entire population from which your data were sampled. This means that your choice of random and fixed variable often has to do with what inference you wish to make. In other words, fixed effects are typical main effects in a regression/anova model, in the context of this assignment they are the non-random part of a mixed model. Random effects are those effects that are specific to an experimental unit. In the context of most studies the experimental unit is the level of some grouping factor, but this is only one possibility, one sample from a larger population. 
+
+Let us revisit our cover crop study. The study was extended to multiple environments in multiple years over multiple harvest dates. The goal was to assess the best planting date for the winter annual cover crop. The Rye was grown in a randomized complete block design at five planting dates in six environment year combinations. Biomass and nitrogen uptake were measured. In this case explore the model with Block, Environment, and Year as random effects. Do not worry about random interactions. 
+
+```{r}
+mm <- read.csv("") #read.csv("path to data file")
+head(mm)# look at the first 6 lines
+str(mm) #make sure each variable is what it is supposed to be (factor,  numberic, character)
+```
+
+**Problem 1.** What are the factors in this experiment? Are the factors random or fixed in this experiment?
+**Answer:** 
+
+**Problem 2.** State the null and alternative hypotheses for the experiment.
+**Answer:**
+*HO:* 
+*HA:* 
+
+**Problem 3.** Write the linear additive model and define the components of the mixed model. The structure will be a randomized complete block with with random covariates.
+**Answer:**
+
+**Problem 4.** Conduct an Analysis
+**a.**	Summarize the results
+```{r}
+###preliminary visualization of planting date, biomass, colored by environment and facted by year
+ggplot(mm, aes(x= , y= , col = ))+
+  geom_boxplot() +  
+  facet_wrap(~) +
+  xlab('Planting Date')+
+  ylab('Biomass Kg')+
+  theme_bw()
+
+##Create the fixed effect model this will be a split-split plot
+
+cc_lm = with(mm, ssp.plot()) # recall to understand the syntax use ?ssp.plot
+summary(cc_lm)
+
+cc_lm_for_assum<-aov(, data=mm) # if you need to know the specification for aov use ?ssp.plot
+
+#check assumptions
+plot(cc_lm_for_assum)
+### Levene test for homogeneity of variance
+leveneTest(,data = mm)  #if you do not know the syntax ?leveneTest
+
+```
+#Descibe the residual graphic
+
+```{r}
+#create a random effects model
+cc_mixed = lmer(, data = mm) #random effect of student
+
+summary(cc_mixed)
+anova(cc_mixed) # anova table of random effects
+rand(cc_mixed) #significance of random effects
+
+#residuals
+plot(cc_mixed) #look at the residuals
+
+##confidence intervals
+confint(cc_mixed) #generate confidnece intervals 
+ranef(cc_mixed)$Env %>% head(8) #get the random effects of the first 8 rows
+
+#get fixed effects of each treatment
+coef(cc_mixed)$Env %>% head(8)
+
+REsim(cc_mixed)  # mean, median and sd of the random effect estimates
+
+plotREsim(REsim(cc_mixed))  # plot the interval estimates
+
+```
+#Descibe the interval estimates
+
+```{r}
+#Prediction
+predict(cc_mixed, re.form=NA) %>% head()
+predict_no_re = predict(cc_mixed)
+pr_cc<-predictInterval(cc_mixed)  # for various model predictions, possibly with new data
+pr_interval<-data.frame(mm$Year, mm$Env, mm$Planting_date, mm$Block, pr_cc$fit, pr_cc$lwr, pr_cc$upr)
+head(pr_interval)
+str(pr_interval)
+
+##summarize the new dataframe
+pr_mean_fit<- # create values for the mean
+  pr_interval %>% 
+  group_by() %>% # <- remember to group by the important factors that exist in the new dataframe e.g. Year, Env, Planting Date
+  summarise(mean_fit = mean(pr_cc.fit)) #calculate statistic for variable of interest
+pr_mean_fit<- data.frame(pr_mean_fit)
+pr_mean_fit$combo<-as.factor(paste(pr_mean_fit$mm.Year,pr_mean_fit$mm.Env))
+
+pr_mean_lwr<- # create values for the lower confidence limit
+  pr_interval %>% 
+  group_by() %>% # <- remember to group by the important factors that exist in the new dataframe e.g. Year, Env, Planting Date
+  summarise( mean_pr_lwr =mean(pr_cc.lwr)) #calculate statistic for variable of interest
+pr_mean_lwr<- data.frame(pr_mean_lwr)
+pr_mean_lwr$combo<-as.factor(paste(pr_mean_lwr$mm.Year,pr_mean_lwr$mm.Env))
+
+
+pr_mean_upr<- # create values for the upper confidence limit
+  pr_interval %>% 
+  group_by() %>% # <- remember to group by the important factors that exist in the new dataframe e.g. Year, Env, Planting Date
+  summarise(mean_pr_upr = mean(pr_cc.upr)) #calculate statistic for variable of interest
+pr_mean_upr<- data.frame(pr_mean_upr)
+pr_mean_upr$combo<-as.factor(paste(pr_mean_upr$mm.Year,pr_mean_upr$mm.Env))
+
+#plot the data and interpret
+# Use 95% prediction interval
+ggplot (pr_mean_fit, aes(x= , y=,  col = ))+
+  geom_smooth() +  
+  xlab('Planting Date')+
+  ylab('Biomass Kg')+
+  theme_bw()
+
+#boxplot with model fitted value
+#this should be similar to the preliminary visualization just now with model adjusted values
+ggplot (pr_interval, aes(x= , y= ,  col = ))+
+  geom_boxplot() +  
+  facet_wrap(~) +  
+  xlab('Harvest Date')+
+  ylab('Biomass Kg')+
+  theme_bw()
+
+
+
+```
+**Problem 5:** Write a brief summary of the results and discuss conclusions you could draw from the data set. 
+**Answer:** 
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+

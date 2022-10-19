@@ -1,0 +1,69 @@
+---
+title: "HW03 template"
+output:
+  word_document: default
+  pdf_document: default
+  
+  ### Name
+---
+
+```{r setup, include=FALSE}
+
+library(car)
+library(agricolae)
+library(DunnettTests)
+library(multcomp)
+
+```
+
+**Problem**
+An agronomist was interested in testing the impact of planting date on the biomass and nitrogen uptake of a winter rye cover crop. To this end, five planting dates were explored at a location in on the US/Canada border. In addition to biomass, growth stage of the rye, the nitrogen uptake and the number of growing degree days were also assessed. The design was a randomized complete block with four replications. 
+
+**a.	State the null and alternative hypotheses for the experiment.**
+**Answer:** 
+Null Hypothesis: 
+Alternative Hypothesis: 
+
+**b. Write the linear model and define the components of the model.**
+**recal this is the abstraction of the design**
+**Answer:** 
+
+
+
+**c.	Conduct an Analysis of Variance (ANOVA) for for two of the response variables**
+```{r}
+cc<- read.csv('') #read in data
+head(cc)
+str(cc)
+aov.cc <- aov()
+
+```
+
+**d.	Write out the table**
+```{r}
+summary(aov.cc)
+```
+
+
+**e. Construct a table of treatment means using an appropriate mean separation procedure of your choice.**
+
+```{r}
+
+lsd.cc <- LSD.test() # or HSD or dunnett
+bar.group()
+title(cex.main=0.8,main="Impact of Planting date Yield",xlab="Planting Date",ylab="Yield")
+
+```
+
+**f.	Write a brief summary of the results and discuss conclusions you could draw from the data set.**
+**Answer:** 
+
+
+
+
+
+
+
+
+## R Markdown
+
